@@ -27,11 +27,13 @@ struct ContentView: View {
     var totalAmout: Double {
         let orderAmount = Double(checkAmount) ?? 0
         let tipPercentage = Double(tipPercentages[tipPercentage])
+        
         let tipValue = orderAmount / 100 * tipPercentage
         let totalValue = orderAmount + tipValue
         
         return totalValue
     }
+    
     var body: some View {
         NavigationView {
         Form {
@@ -46,8 +48,12 @@ struct ContentView: View {
                 }.pickerStyle(SegmentedPickerStyle())
             }.textCase(nil)
             Section(header: Text("Total Amount")) {
+                
                 Text("$\(totalAmout, specifier: "%.2f")")
+                    .foregroundColor(tipPercentage == 4 ? Color.red : Color.black)
             }.textCase(nil)
+            
+            
             Section(header: Text("Amount Per Person")) {
                 Text("$\(totalPerPerson ?? 0, specifier: "%.2f")")
             }.textCase(nil)
