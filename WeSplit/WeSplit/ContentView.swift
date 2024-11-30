@@ -2,69 +2,88 @@
 //  ContentView.swift
 //  WeSplit
 //
-//  Created by Sravya Kaki on 3/18/21.
+//  Created by Sravya Kaki on 2024-11-27.
 //
 
 import SwiftUI
 
 struct ContentView: View {
-    @State private var checkAmount = ""
-    @State private var numberOfPeople = 0
-    @State private var tipPercentage = 4
+    
+    @State private var checkAmount = 0.0
+    @State private var numberOfPeople = 2
+    @State private var tipPercentage = 20
+    @FocusState private var amountIsFocused: Bool
     
     let tipPercentages = [10, 15, 20, 25, 0]
-    var totalPerPerson: Double? {
+    var totalPerPerson: Double {
         let peopleCount = Double(numberOfPeople + 2)
-        let tipSelection = Double(tipPercentages[tipPercentage])
-        let orderAmount = Double(checkAmount) ?? 0
+        let tipSelection = Double(tipPercentage)
         
-        let tipValue = orderAmount / 100 * tipSelection
-        let grandTotal = tipValue + orderAmount
+        let tipValue = checkAmount / 100 * tipSelection
+        let grandTotal = checkAmount + tipValue
         let amountPerPerson = grandTotal / peopleCount
         
         return amountPerPerson
     }
-    var totalAmout: Double {
-        let orderAmount = Double(checkAmount) ?? 0
-        let tipPercentage = Double(tipPercentages[tipPercentage])
+    
+    var grandTotal: Double {
+        let tipSelection = Double(tipPercentage)
+        let tipValue = checkAmount / 100 * tipSelection
+        let grandTotal = checkAmount + tipValue
         
-        let tipValue = orderAmount / 100 * tipPercentage
-        let totalValue = orderAmount + tipValue
-        
-        return totalValue
+        return grandTotal
     }
     
     var body: some View {
-        NavigationView {
-        Form {
-            Section {
-                TextField("Amount", text: $checkAmount).keyboardType(.decimalPad)
-                TextField("Number of People", value: $numberOfPeople, formatter: NumberFormatter()).keyboardType(.decimalPad)
-            }
-            Section(header: Text("How much tip do you want to leave?")){                Picker("Tip percentage", selection: $tipPercentage) {
-                    ForEach(0 ..< tipPercentages.count) {
-                        Text("\(self.tipPercentages[$0])%")
+        NavigationStack {
+            Form {
+                Section {
+                    TextField("Amount", value: $checkAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        .keyboardType(.decimalPad)
+                        .focused($amountIsFocused)
+                    
+                    
+                    Picker("Number of people", selection: $numberOfPeople) {
+                        ForEach(2 ..< 100) {
+                            Text("\($0) people")
+                        }
                     }
-                }.pickerStyle(SegmentedPickerStyle())
-            }.textCase(nil)
-            Section(header: Text("Total Amount")) {
+                    .pickerStyle(.navigationLink)
+                }
+                Section("How much tip do you want to leave?") {
+                    Picker("Tip percentage", selection: $tipPercentage) {
+                        ForEach(0..<101) {
+                            Text($0, format: .percent)
+                        }
+                    }
+                    .pickerStyle(.navigationLink)
+                }
                 
-                Text("$\(totalAmout, specifier: "%.2f")")
-                    .foregroundColor(tipPercentage == 4 ? Color.red : Color.black)
-            }.textCase(nil)
+                Section {
+                    Text("Amount per person")
+                    Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                }
+                Section {
+                    Text("Total Amount:")
+                    Text(grandTotal, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                }
+                
+                
+            }.navigationTitle("WeSplit")
+                .toolbar {
+                    if amountIsFocused {
+                        Button("Done") {
+                            amountIsFocused = false
+                        }
+                    }
+                }
             
             
-            Section(header: Text("Amount Per Person")) {
-                Text("$\(totalPerPerson ?? 0, specifier: "%.2f")")
-            }.textCase(nil)
-        }
-        .navigationBarTitle("WeSplit")
         }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+#Preview {
+    ContentView()
 }
+
