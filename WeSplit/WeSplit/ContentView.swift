@@ -57,6 +57,7 @@ struct ContentView: View {
                         }
                     }
                     .pickerStyle(.navigationLink)
+                    
                 }
                 
                 Section {
@@ -65,6 +66,7 @@ struct ContentView: View {
                 }
                 Section {
                     Text("Total Amount:")
+                        .foregroundStyle(tipPercentage > 0 ? .black : .red)
                     Text(grandTotal, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                 }
                 

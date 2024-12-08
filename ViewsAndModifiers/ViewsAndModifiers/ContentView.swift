@@ -2,32 +2,38 @@
 //  ContentView.swift
 //  ViewsAndModifiers
 //
-//  Created by Sravya Kaki on 6/3/21.
+//  Created by Sravya Kaki on 2024-12-06.
 //
 
 import SwiftUI
 
-struct ChallengeView: ViewModifier {
-    var text: String
+struct ContentView: View {
+    @State private var val = false
     
+    var body: some View {
+        VStack {
+            Button("Hello World") {
+                val.toggle()
+            }
+            .someStyle()        }
+        .padding()
+    }
+}
+
+#Preview {
+    ContentView()
+}
+
+struct CustomView: ViewModifier {
     func body(content: Content) -> some View {
         content
-                .font(.title)
-                .foregroundColor(.blue)
+            .font(.largeTitle)
+            .foregroundStyle(.blue)
     }
 }
 
 extension View {
-    func testThisCV(with text: String) -> some View {
-        self.modifier(ChallengeView(text: text))
+    func someStyle() -> some View {
+        modifier(CustomView())
     }
 }
-
-struct ContentView: View {
-    var body: some View {
-        Text("Hey there")
-            .testThisCV(with: "It's time to test")
-        
-    }
-}
-
