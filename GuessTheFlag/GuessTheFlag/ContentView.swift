@@ -16,7 +16,8 @@ struct ContentView: View {
     @State private var selectedCountry = ""
     @State private var numOfQuestions = 1
     @State private var showFinalScore = false
-    
+    @State private var tappedItemIndex: Int? = nil
+    @State private var isButtonTapped = false
     var body: some View {
         ZStack {
             RadialGradient(stops: [
@@ -41,7 +42,10 @@ struct ContentView: View {
                         } label: {
                             FlagImage(number: number, countries: countries)
                         }
-                        
+                        .rotation3DEffect(.degrees(tappedItemIndex == number ? 360 : 0), axis: (x:0, y: 1, z: 0))
+                        .opacity((isButtonTapped && tappedItemIndex != number) ? 0.25 : 1.00)
+                        .scaleEffect((isButtonTapped && tappedItemIndex != number) ? 0.75 : 1.00)
+                        .animation(.easeIn(duration: 1), value: tappedItemIndex)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -74,6 +78,8 @@ Your score is \(currentScore)
         }
     }
     func flagTapped(_ number: Int) {
+        tappedItemIndex = number
+        isButtonTapped = true
         if(number == correctAnswer) {
             scoreTitle = "Correct"
             currentScore += 1
@@ -86,6 +92,8 @@ Your score is \(currentScore)
     }
     
     func askQuestion() {
+        tappedItemIndex = nil
+        isButtonTapped = false
         if(numOfQuestions < 8) {
             countries.shuffle()
             correctAnswer = Int.random(in: 0...2)
@@ -118,5 +126,4 @@ struct FlagImage: View
             .clipShape(.capsule)
             .shadow(radius: 5)
     }
-
 }
