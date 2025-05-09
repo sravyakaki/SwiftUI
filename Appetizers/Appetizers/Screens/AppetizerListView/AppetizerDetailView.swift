@@ -54,18 +54,19 @@ struct AppetizerDetailView: View {
                 .padding(.bottom, 30)
 
             }
-            .frame(width: 300, height: 525)
-            .background(Color(.systemBackground))
-            .cornerRadius(12)
-            .shadow(radius: 40)
-            .overlay(
-                Button {
-                    isShowingDetail = false
-                } label: {
-                    XDismissButton()
-                },
-                alignment: .topTrailing)
+           
         }
+        .frame(width: 300, height: 525)
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .shadow(radius: 40)
+        .overlay(
+            Button {
+                isShowingDetail = false
+            } label: {
+                XDismissButton()
+            },
+            alignment: .topTrailing)
     }
 
 }
